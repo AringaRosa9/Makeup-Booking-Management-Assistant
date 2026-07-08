@@ -48,4 +48,26 @@ export const api = {
   getIncomeStats: () => request('/income/stats'),
   addManualIncome: (body) => request('/income/manual', { method: 'POST', body: JSON.stringify(body) }),
   deleteManualIncome: (id) => request(`/income/manual/${id}`, { method: 'DELETE' }),
+
+  getPortfolio: (typeId) => request(`/portfolio${typeId ? `?makeup_type_id=${typeId}` : ''}`),
+  addPortfolio: (formData) => request('/portfolio', { method: 'POST', body: formData, headers: {} }),
+  updatePortfolio: (id, body) => request(`/portfolio/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  deletePortfolio: (id) => request(`/portfolio/${id}`, { method: 'DELETE' }),
+
+  getNotifications: () => request('/notifications'),
+  getUnreadCount: () => request('/notifications/unread-count'),
+  markRead: (id) => request(`/notifications/${id}/read`, { method: 'PUT' }),
+  markAllRead: () => request('/notifications/read-all', { method: 'PUT' }),
+
+  getReviews: (params) => {
+    const qs = new URLSearchParams(params).toString();
+    return request(`/reviews?${qs}`);
+  },
+  addReview: (body) => request('/reviews', { method: 'POST', body: JSON.stringify(body) }),
+  getReviewStats: () => request('/reviews/stats'),
+  setReviewVisibility: (id, isPublic) => request(`/reviews/${id}/visibility`, { method: 'PUT', body: JSON.stringify({ is_public: isPublic }) }),
+
+  getShareConfig: () => request('/share/config'),
+  updateShareConfig: (body) => request('/share/config', { method: 'PUT', body: JSON.stringify(body) }),
+  getPublicPage: () => request('/share/public'),
 };

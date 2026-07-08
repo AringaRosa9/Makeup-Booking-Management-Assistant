@@ -38,7 +38,7 @@ export default function Prices() {
     api.getTypes().then(setTypes).catch(() => {});
     api.getExtras().then(setExtras).catch(() => {});
   };
-  useEffect(load, []);
+  useEffect(() => { load(); }, []);
 
   const typeFields = [
     { key: 'name', label: '妆型名称', placeholder: '如：新娘妆' },

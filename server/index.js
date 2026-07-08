@@ -15,6 +15,10 @@ app.use('/api/notices', require('./routes/notices'));
 app.use('/api/makeup', require('./routes/makeup'));
 app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/income', require('./routes/income'));
+app.use('/api/portfolio', require('./routes/portfolio'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/reviews', require('./routes/reviews'));
+app.use('/api/share', require('./routes/share'));
 
 app.use((err, req, res, next) => {
   if (err.name === 'MulterError') {

@@ -96,7 +96,53 @@ db.exec(`
     notes TEXT DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
+
+  CREATE TABLE IF NOT EXISTS portfolio (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    makeup_type_id INTEGER,
+    image_path TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (makeup_type_id) REFERENCES makeup_types(id) ON DELETE SET NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT DEFAULT '',
+    related_id INTEGER,
+    is_read INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
+  CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    appointment_id INTEGER NOT NULL UNIQUE,
+    user_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
+    content TEXT DEFAULT '',
+    is_public INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS share_config (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT DEFAULT '接妆管理助手',
+    description TEXT DEFAULT '专业化妆师，欢迎预约',
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
+
+const shareExists = db.prepare('SELECT COUNT(*) as count FROM share_config').get();
+if (shareExists.count === 0) {
+  db.prepare("INSERT INTO share_config (title, description) VALUES (?, ?)").run('接妆管理助手', '专业化妆师，欢迎预约');
+}
 
 const noticeExists = db.prepare('SELECT COUNT(*) as count FROM notices').get();
 if (noticeExists.count === 0) {

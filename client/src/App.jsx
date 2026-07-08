@@ -9,6 +9,10 @@ import Prices from './pages/Prices';
 import Booking from './pages/Booking';
 import Income from './pages/Income';
 import Profile from './pages/Profile';
+import Portfolio from './pages/Portfolio';
+import Notifications from './pages/Notifications';
+import Reviews from './pages/Reviews';
+import Share from './pages/Share';
 
 function ProtectedLayout() {
   const { user, loading, isAdmin } = useAuth();
@@ -29,7 +33,11 @@ function ProtectedLayout() {
       <Routes>
         <Route path="/prices" element={<Prices />} />
         <Route path="/booking" element={<Booking />} />
+        <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/reviews" element={<Reviews />} />
+        <Route path="/notifications" element={<Notifications />} />
         {isAdmin && <Route path="/income" element={<Income />} />}
+        {isAdmin && <Route path="/share" element={<Share />} />}
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/prices" replace />} />
       </Routes>

@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const db = require('../db');
 const { authMiddleware, adminOnly } = require('../middleware/auth');
+const { createNotification } = require('./notifications');
 
 const router = express.Router();
 
@@ -120,6 +121,12 @@ router.post('/', authMiddleware, upload.array('images', 6), (req, res) => {
   });
 
   const appointmentId = transaction();
+
+  const admin = db.prepare("SELECT id FROM users WHERE role = 'admin' LIMIT 1").get();
+  if (admin) {
+    createNotification(admin.id, 'new_appointment', '新预约', `收到新预约，妆型：${makeupType.name}`, appointmentId);
+  }
+
   res.json({ success: true, appointmentId });
 });
 
@@ -172,7 +179,14 @@ router.put('/:id/status', authMiddleware, adminOnly, (req, res) => {
   if (!['confirmed', 'completed', 'cancelled'].includes(status)) {
     return res.status(400).json({ error: '无效的状态' });
   }
+  const appointment = db.prepare('SELECT * FROM appointments WHERE id = ?').get(req.params.id);
   db.prepare('UPDATE appointments SET status = ? WHERE id = ?').run(status, req.params.id);
+
+  if (appointment) {
+    const statusText = { confirmed: '已确认', completed: '已完成', cancelled: '已取消' };
+    createNotification(appointment.user_id, 'status_change', '预约状态更新', `您的预约已${statusText[status]}`, appointment.id);
+  }
+
   res.json({ success: true });
 });
 

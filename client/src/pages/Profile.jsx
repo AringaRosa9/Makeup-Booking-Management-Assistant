@@ -46,6 +46,16 @@ export default function Profile() {
             <span className="text-gray-300">&gt;</span>
           </button>
         )}
+        <button onClick={() => navigate('/reviews')} className="w-full px-5 py-4 flex items-center justify-between text-sm text-gray-700 border-b border-gray-50 text-left">
+          <span>{isAdmin ? '管理评价' : '我的评价'}</span>
+          <span className="text-gray-300">&gt;</span>
+        </button>
+        {isAdmin && (
+          <button onClick={() => navigate('/share')} className="w-full px-5 py-4 flex items-center justify-between text-sm text-gray-700 border-b border-gray-50 text-left">
+            <span>分享获客</span>
+            <span className="text-gray-300">&gt;</span>
+          </button>
+        )}
         <button onClick={handleLogout} className="w-full px-5 py-4 flex items-center justify-between text-sm text-red-400 text-left">
           <span>退出登录</span>
           <span className="text-gray-300">&gt;</span>
